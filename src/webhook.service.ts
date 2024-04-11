@@ -57,6 +57,7 @@ export class WebhookService {
    *
    * @param paymentIntent The payment intent object from Stripe indicating a successful payment.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent): void {
     console.log('Payment was successful.');
     // Logic to handle successful payment
@@ -67,6 +68,7 @@ export class WebhookService {
    *
    * @param refund The refund object from Stripe indicating a processed refund.
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   handleRefund(refund: Stripe.Refund): void {
     console.log('Refund processed.');
     // Logic to handle refund

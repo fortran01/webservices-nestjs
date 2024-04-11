@@ -1,21 +1,34 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ChargeController } from './charge.controller';
+import { WebhookController } from './webhook.controller';
+import { ChargeService } from './charge.service';
+import { WebhookService } from './webhook.service';
 
-describe('AppController', () => {
-  let app: TestingModule;
+describe('Controllers', () => {
+  let module: TestingModule;
 
   beforeAll(async () => {
-    app = await Test.createTestingModule({
-      controllers: [AppController],
-      providers: [AppService],
+    module = await Test.createTestingModule({
+      controllers: [ChargeController, WebhookController],
+      providers: [ChargeService, WebhookService],
     }).compile();
   });
 
-  describe('getHello', () => {
-    it('should return "Hello World!"', () => {
-      const appController = app.get(AppController);
-      expect(appController.getHello()).toBe('Hello World!');
+  // Example test for ChargeController
+  describe('ChargeController', () => {
+    it('should be defined', () => {
+      const controller: ChargeController =
+        module.get<ChargeController>(ChargeController);
+      expect(controller).toBeDefined();
+    });
+  });
+
+  // Example test for WebhookController
+  describe('WebhookController', () => {
+    it('should be defined', () => {
+      const controller: WebhookController =
+        module.get<WebhookController>(WebhookController);
+      expect(controller).toBeDefined();
     });
   });
 });
