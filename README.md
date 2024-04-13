@@ -33,7 +33,8 @@ npm install
 
 ```bash
 export STRIPE_SECRET_KEY=sk_test_...
-export STRIPE_WEBHOOK_SECRET=whsec_...
+export STRIPE_WEBHOOK_SECRET=whsec_...\
+npm run build
 npm run start
 ```
 
