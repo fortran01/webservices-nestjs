@@ -47,8 +47,12 @@ export class WebhookService {
         this.endpointSecret,
       );
     } catch (err) {
-      console.error(`Webhook Error: ${err.message}`);
-      throw err;
+      if (err instanceof Error) {
+        console.error(`Webhook Error: ${err.message}`);
+        throw err;
+      } else {
+        throw new Error('An unknown error occurred');
+      }
     }
   }
 
