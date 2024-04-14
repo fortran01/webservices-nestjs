@@ -10,6 +10,8 @@ import { ChargeService } from './charge.service';
 import { HttpModule } from '@nestjs/axios';
 import { WebhookController } from './webhook.controller';
 import { WebhookService } from './webhook.service';
+import { PollController } from './poll.controller';
+import { DataService } from './data.service';
 
 /**
  * The AppModule class is the root module of the application.
@@ -29,7 +31,7 @@ import { WebhookService } from './webhook.service';
     } as ServeStaticModuleOptions),
     HttpModule,
   ],
-  controllers: [ChargeController, WebhookController],
-  providers: [ChargeService, WebhookService],
+  controllers: [ChargeController, WebhookController, PollController],
+  providers: [ChargeService, WebhookService, DataService],
 })
 export class AppModule {}
