@@ -11,7 +11,6 @@ import {
 import { Request, Response } from 'express';
 import { WebhookService } from './webhook.service';
 import Stripe from 'stripe';
-// import { RequestWithRawBody } from './requestWithRawBody.interface';
 
 /**
  * Controller to handle webhook requests.
