@@ -1,5 +1,3 @@
-// charge.model.ts
-
 /**
  * Represents a financial transaction charge.
  */

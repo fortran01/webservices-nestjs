@@ -6,11 +6,12 @@ import {
   HttpStatus,
   Body,
   Headers,
+  RawBodyRequest,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { WebhookService } from './webhook.service';
 import Stripe from 'stripe';
-import { RequestWithRawBody } from './requestWithRawBody.interface';
+// import { RequestWithRawBody } from './requestWithRawBody.interface';
 
 /**
  * Controller to handle webhook requests.
@@ -33,7 +34,7 @@ export class WebhookController {
    */
   @Post()
   async handleWebhook(
-    @Req() req: RequestWithRawBody,
+    @Req() req: RawBodyRequest<Request>,
     @Res() res: Response,
     @Body() body: any,
     @Headers('stripe-signature') signature: string,

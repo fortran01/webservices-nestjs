@@ -1,20 +1,17 @@
-import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
-import { rawBodyMiddleware } from './rawBody.middleware';
 
 /**
  * Bootstraps the application.
  * This function initializes the NestJS application with the AppModule,
- * sets a global prefix for the API routes, listens on a specified port,
- * and applies the RawBodyMiddleware globally.
+ * sets a global prefix for the API routes, listens on a specified port.
  */
 async function bootstrap(): Promise<void> {
-  // Create a new NestJS application instance
-  const app: INestApplication = await NestFactory.create(AppModule);
-
-  // Apply the RawBodyMiddleware to webhooks
-  app.use('/api/webhook', rawBodyMiddleware());
+  // Create a new NestJS application instance with rawBody enabled
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true,
+  });
 
   // Set a global prefix for all routes
   app.setGlobalPrefix('api');

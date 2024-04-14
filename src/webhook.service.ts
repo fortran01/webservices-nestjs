@@ -39,7 +39,10 @@ export class WebhookService {
    * @returns The event object constructed from the raw body and signature.
    * @throws Throws an error if the event cannot be verified or constructed.
    */
-  processEvent(rawBody: Buffer, signature: string): Stripe.Event {
+  processEvent(rawBody: Buffer | undefined, signature: string): Stripe.Event {
+    if (rawBody === undefined) {
+      throw new Error('Raw body is undefined');
+    }
     try {
       return this.stripeClient.webhooks.constructEvent(
         rawBody,
