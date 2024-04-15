@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE Example</title>
+    <script>
+        if (!!window.EventSource) {
+            var source;
+            var reconnectAttempts = 0;
+            var connect = function() {
+                source = new EventSource('/api/events/sse');
+
+                source.onmessage = function(e) {
+                    var dataElement = document.getElementById('data');
+                    dataElement.innerHTML += e.data + '<br>';
+                    reconnectAttempts = 0;
+                    document.getElementById('reconnect-attempts').innerHTML =
+                        'Reconnect attempts: ' + reconnectAttempts;
+                };
+                source.onerror = function(error) {
+                    console.error("EventSource failed:", error);
+                    source.close();
+                    reconnectAttempts++;
+                    document.getElementById('reconnect-attempts').innerHTML =
+                        'Reconnect attempts: ' + reconnectAttempts;
+                    setTimeout(connect, 5000);
+                };
+            };
+            connect();
+        } else {
+            console.log("Browser doesn't support SSE. Consider upgrading.");
+        }
+    </script>
+</head>
+<body>
+    <h1>Server Sent Events (SSE) Example</h1>
+    <div id="data"></div>
+    <div id="reconnect-attempts">Reconnect attempts: 0</div>
+</body>
+</html>

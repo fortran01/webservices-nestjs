@@ -12,11 +12,14 @@ import { WebhookController } from './webhook.controller';
 import { WebhookService } from './webhook.service';
 import { PollController } from './poll.controller';
 import { DataService } from './data.service';
+import { SseController } from './sse.controller';
+import { SseService } from './sse.service';
 
 /**
  * The AppModule class is the root module of the application.
  * It imports necessary modules such as ConfigModule for configuration management,
- * ServeStaticModule for serving static files, and HttpModule for HTTP requests.
+ * ServeStaticModule for serving static files, HttpModule for HTTP requests, and
+ * it now includes the SseController and SseService for server-sent events functionality.
  * It also declares the controllers and providers that are used in the application.
  */
 @Module({
@@ -31,7 +34,12 @@ import { DataService } from './data.service';
     } as ServeStaticModuleOptions),
     HttpModule,
   ],
-  controllers: [ChargeController, WebhookController, PollController],
-  providers: [ChargeService, WebhookService, DataService],
+  controllers: [
+    ChargeController,
+    WebhookController,
+    PollController,
+    SseController,
+  ],
+  providers: [ChargeService, WebhookService, DataService, SseService],
 })
 export class AppModule {}
