@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import Stripe from 'stripe';
 import { ConfigService } from '@nestjs/config';
+import { EventsGateway } from './events.gateway';
 
 /**
  * Service responsible for handling webhook events from Stripe.
@@ -19,8 +20,13 @@ export class WebhookService {
 
   /**
    * Initializes the Stripe client with the API key from the ConfigService.
+   * @param configService The configuration service to access environment variables.
+   * @param eventsGateway The gateway for emitting WebSocket events.
    */
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private eventsGateway: EventsGateway,
+  ) {
     this.stripeClient = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY') || '',
       {
@@ -62,22 +68,42 @@ export class WebhookService {
   /**
    * Handles successful payment intents from Stripe.
    *
-   * @param paymentIntent The payment intent object from Stripe indicating a successful payment.
+   * @param event The Stripe event object indicating a successful payment intent.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent): void {
-    console.log('Payment was successful.');
-    // Logic to handle successful payment
+  handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent): void {
+    this.eventsGateway.emitChargeStatus({
+      status: 'succeeded',
+      payment_intent: paymentIntent,
+      timestamp: new Date().toISOString(),
+    });
+    console.log('Payment intent succeeded:', paymentIntent.id);
   }
 
   /**
-   * Handles refunds processed by Stripe.
+   * Handles refunded charges from Stripe.
    *
-   * @param refund The refund object from Stripe indicating a processed refund.
+   * @param event The Stripe event object indicating a refunded charge.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  handleRefund(refund: Stripe.Refund): void {
-    console.log('Refund processed.');
-    // Logic to handle refund
+  handleChargeRefunded(refund: Stripe.Refund): void {
+    this.eventsGateway.emitChargeStatus({
+      status: 'refunded',
+      refund: refund,
+      timestamp: new Date().toISOString(),
+    });
+    console.log('Charge refunded:', refund.id);
+  }
+
+  /**
+   * Handles successful charge events from Stripe.
+   *
+   * @param event The Stripe event object indicating a successful charge.
+   */
+  handleChargeSucceeded(charge: Stripe.Charge): void {
+    this.eventsGateway.emitChargeStatus({
+      status: 'succeeded',
+      charge: charge,
+      timestamp: new Date().toISOString(),
+    });
+    console.log('Charge succeeded:', charge.id);
   }
 }

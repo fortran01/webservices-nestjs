@@ -48,12 +48,16 @@ export class WebhookController {
         case 'payment_intent.succeeded':
           const paymentIntent: Stripe.PaymentIntent = event.data
             .object as Stripe.PaymentIntent;
-          this.webhookService.handlePaymentSuccess(paymentIntent);
+          this.webhookService.handlePaymentIntentSucceeded(paymentIntent);
           break;
         case 'charge.refunded':
           const refund: Stripe.Refund = event.data
             .object as unknown as Stripe.Refund;
-          this.webhookService.handleRefund(refund);
+          this.webhookService.handleChargeRefunded(refund);
+          break;
+        case 'charge.succeeded':
+          const charge: Stripe.Charge = event.data.object as Stripe.Charge;
+          this.webhookService.handleChargeSucceeded(charge);
           break;
         default:
           console.warn(`Unhandled event type: ${event.type}`);

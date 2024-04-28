@@ -14,6 +14,7 @@ import { PollController } from './poll.controller';
 import { DataService } from './data.service';
 import { SseController } from './sse.controller';
 import { SseService } from './sse.service';
+import { EventsGateway } from './events.gateway';
 
 /**
  * The AppModule class is the root module of the application.
@@ -40,6 +41,12 @@ import { SseService } from './sse.service';
     PollController,
     SseController,
   ],
-  providers: [ChargeService, WebhookService, DataService, SseService],
+  providers: [
+    ChargeService,
+    WebhookService,
+    DataService,
+    SseService,
+    EventsGateway,
+  ],
 })
 export class AppModule {}

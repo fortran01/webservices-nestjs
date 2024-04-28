@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { ConfigService } from '@nestjs/config';
 import { Charge } from './charge.model';
+import { EventsGateway } from './events.gateway';
 
 /**
  * Service to handle charges with Stripe API.
@@ -22,10 +23,12 @@ export class ChargeService {
    * Constructs the ChargeService.
    * @param httpService The HTTP service for making requests.
    * @param configService The configuration service for accessing environment variables.
+   * @param eventsGateway The gateway for emitting WebSocket events.
    */
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
+    private readonly eventsGateway: EventsGateway,
   ) {
     this.stripeApiKey = this.configService.get<string>('STRIPE_API_KEY') || '';
   }
@@ -73,6 +76,13 @@ export class ChargeService {
       );
 
       const latency: number = Date.now() - start;
+
+      // Emitting an event after charge creation
+      this.eventsGateway.emitChargeStatus({
+        status: 'pending',
+        charge: data,
+        timestamp: new Date().toISOString(),
+      });
 
       return { charge, latency };
     } catch (error: any) {

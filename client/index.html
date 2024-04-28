@@ -3,6 +3,7 @@
 <head>
     <title>Stripe Payment Example</title>
     <script src="https://js.stripe.com/v3/"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script> 
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,7 +40,7 @@
             width: 100%;
         }
         
-        #result {
+        #result, #websocket-messages {
             margin-top: 20px;
         }
     </style>
@@ -55,16 +56,17 @@
             </div>
             <div class="form-group">
                 <label for="amount">Amount:</label>
-                <input type="text" id="amount" placeholder="Enter amount" required>
+                <input type="number" id="amount" placeholder="Enter amount in USD" required>
             </div>
             <div class="form-group">
                 <label for="currency">Currency:</label>
-                <input type="text" id="currency" placeholder="Enter currency" required>
+                <input type="text" id="currency" value="usd" required>
             </div>
             <button type="submit">Pay</button>
         </form>
         
         <div id="result"></div>
+        <div id="websocket-messages"></div>
     </div>
     
     <script>
@@ -78,7 +80,7 @@
             event.preventDefault();
             
             var amountInDollars = document.getElementById('amount').value;
-            var currency = document.getElementById('currency').value;
+            var currency = document.getElementById('currency').value.toLowerCase();
             var amount = amountInDollars * 100; // Convert to smallest currency unit
             
             stripe.createToken(cardElement).then(function(result) {
@@ -105,10 +107,8 @@
                 body: JSON.stringify(data)
             })
             .then(function(response) {
-                if (!response.ok) { // Checks if the response status code is not in the range 200-299
+                if (!response.ok) {
                     return response.json().then(errorData => {
-                        console.log(errorData)
-                        // Assuming the server responds with JSON containing an error message
                         throw new Error('Error creating charge: ' + (errorData.message || errorData.error));
                     });
                 }
@@ -131,6 +131,25 @@
             var resultElement = document.getElementById('result');
             resultElement.innerHTML = '<p style="color: red;">' + message + '</p>';
         }
+
+        function updateWebSocketMessages(message) {
+            var websocketMessagesElement = document.getElementById('websocket-messages');
+            websocketMessagesElement.innerHTML += '<p>' + message + '</p>';
+        }
+
+        // Force the client to use WebSockets only, as the server supports both WebSockets and polling
+        // var socket = io();
+        var socket = io({transports: ['websocket']});
+        socket.on('charge_status', function(data) {
+            console.log('Payment status:', data);
+            // Update the UI based on payment status
+            var messageContent = 'Payment status: ' + data.status + '. Charge ID: ' + data.charge.id + '. Timestamp: ' + data.timestamp;
+            if(data.status === 'pending' || data.status === 'succeeded') {
+                updateWebSocketMessages(messageContent);
+            } else {
+                updateWebSocketMessages('<p style="color: red;">' + messageContent + ' Error: ' + data.error + '</p>');
+            }
+        });
     </script>
 </body>
 </html>
