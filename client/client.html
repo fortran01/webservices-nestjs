@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html><body onload="getBlogPosts();">
+<style>
+.post {margin-bottom: 20px;}
+</style>
+<div id="output"></div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+/**
+ * Fetches blog posts from the server and displays them.
+ * This function is called when the body of the page is loaded.
+ */
+var getBlogPosts = function() {
+  // Perform a GET request to the server to fetch blog posts
+  axios.get('https://127.0.0.1:5000/api/posts', {
+    headers: {
+      'Timezone-Offset': new Date().getTimezoneOffset(),
+      'Sample-Source': 'CORS in Action'
+    }
+  })
+  .then(function(response) {
+    // Handle the response by iterating over the data
+    var data = response.data;
+    var elem = document.getElementById('output');
+
+    var xPoweredBy = response.headers['x-powered-by'];
+    if (xPoweredBy) {
+      var xpbDiv = document.createElement('div');
+      xpbDiv.className = 'post';
+      xpbDiv.innerHTML = 'X-Powered-By: ' + xPoweredBy;
+      elem.appendChild(xpbDiv);
+    }
+
+    for (var postId in data) {
+      var postText = data[postId]['post'];
+      var div = document.createElement('div');
+      div.className = 'post';
+      div.id = 'postId' + postId;
+      div.appendChild(document.createTextNode(postText));
+
+      var a = document.createElement('a');
+      a.innerHTML = 'Delete post #' + postId;
+      a.href = '#';
+      a.onclick = (function(postId) {
+        return function() {
+          deletePost(postId);
+        };
+      })(postId);
+      div.appendChild(document.createTextNode(' '));
+      div.appendChild(a);
+
+      elem.appendChild(div);
+    }
+  })
+  .catch(function(error) {
+    // Handle errors by displaying an error message in the output element
+    document.getElementById('output').innerHTML = 'ERROR';
+  });
+};
+
+var deletePost = function(postId) {
+  var url = 'https://127.0.0.1:5000/api/posts/' + postId;
+  axios.delete(url, { withCredentials: true })
+    .then(function(response) {
+      if (response.status == 204) {
+        var element = document.getElementById('postId' + postId);
+        element.parentNode.removeChild(element);
+      }
+    })
+    .catch(function(error) {
+      console.error('Error deleting post:', error);
+    });
+};
+</script>
+</body></html>
