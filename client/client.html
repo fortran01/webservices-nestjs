@@ -4,26 +4,28 @@
 .post {margin-bottom: 20px;}
 </style>
 <div id="output"></div>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 /**
  * Fetches blog posts from the server and displays them.
  * This function is called when the body of the page is loaded.
  */
+const apiBaseUrl = 'http://localhost:5000/api/posts';
+
 var getBlogPosts = function() {
-  // Perform a GET request to the server to fetch blog posts
-  axios.get('https://127.0.0.1:5000/api/posts', {
+  console.log('Cookies:', document.cookie);
+  // Perform a GET request to the server to fetch blog posts using axios
+  axios.get(apiBaseUrl, {
     headers: {
       'Timezone-Offset': new Date().getTimezoneOffset(),
-      'Sample-Source': 'CORS in Action'
+      'Sample-Source': 'CORS in Action',
     }
   })
-  .then(function(response) {
-    // Handle the response by iterating over the data
+  .then(response => {
+    var xPoweredBy = response.headers['x-powered-by'];
     var data = response.data;
     var elem = document.getElementById('output');
 
-    var xPoweredBy = response.headers['x-powered-by'];
     if (xPoweredBy) {
       var xpbDiv = document.createElement('div');
       xpbDiv.className = 'post';
@@ -52,24 +54,30 @@ var getBlogPosts = function() {
       elem.appendChild(div);
     }
   })
-  .catch(function(error) {
-    // Handle errors by displaying an error message in the output element
+  .catch(error => {
+    console.error('Error fetching blog posts:', error);
     document.getElementById('output').innerHTML = 'ERROR';
   });
 };
 
 var deletePost = function(postId) {
-  var url = 'https://127.0.0.1:5000/api/posts/' + postId;
-  axios.delete(url, { withCredentials: true })
-    .then(function(response) {
-      if (response.status == 204) {
-        var element = document.getElementById('postId' + postId);
+  var url = apiBaseUrl + '/' + postId;
+  axios.delete(url, {
+    withCredentials: true, // Ensures cookies are sent with the request
+  })
+  .then(response => {
+    if (response.status == 204) {
+      var element = document.getElementById('postId' + postId);
+      if (element) {
         element.parentNode.removeChild(element);
       }
-    })
-    .catch(function(error) {
-      console.error('Error deleting post:', error);
-    });
+    } else {
+      console.error('Failed to delete post:', response.status);
+    }
+  })
+  .catch(error => {
+    console.error('Error deleting post:', error);
+  });
 };
 </script>
 </body></html>
