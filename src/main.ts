@@ -1,6 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';
+import * as cors from 'cors';
+import * as cookieParser from 'cookie-parser';
 
 /**
  * Bootstraps the application.
@@ -15,6 +17,21 @@ async function bootstrap(): Promise<void> {
 
   // Set a global prefix for all routes
   app.setGlobalPrefix('api');
+
+  // Setup CORS with specific options
+  app.use(
+    cors({
+      origin: 'http://localhost:5000',
+      credentials: true,
+      methods: 'GET, DELETE',
+      allowedHeaders: 'Timezone-Offset, Sample-Source',
+      exposedHeaders: 'X-Powered-By',
+      maxAge: 120,
+    }),
+  );
+
+  // Use cookie-parser middleware
+  app.use(cookieParser());
 
   // Listen on port 3000 for incoming connections
   await app.listen(3000);

@@ -15,6 +15,7 @@ import { DataService } from './data.service';
 import { SseController } from './sse.controller';
 import { SseService } from './sse.service';
 import { EventsGateway } from './events.gateway';
+import { PostsController } from './posts.controller';
 
 /**
  * The AppModule class is the root module of the application.
@@ -40,6 +41,7 @@ import { EventsGateway } from './events.gateway';
     WebhookController,
     PollController,
     SseController,
+    PostsController,
   ],
   providers: [
     ChargeService,
