@@ -16,6 +16,10 @@ import { SseController } from './sse.controller';
 import { SseService } from './sse.service';
 import { EventsGateway } from './events.gateway';
 import { PostsController } from './posts.controller';
+import { TaskController } from './task.controller';
+import { TaskService } from './task.service';
+import { TaskProcessor } from './task.processor';
+import { QueueModule } from './bull.module';
 
 /**
  * The AppModule class is the root module of the application.
@@ -35,6 +39,7 @@ import { PostsController } from './posts.controller';
       exclude: ['/api*'],
     } as ServeStaticModuleOptions),
     HttpModule,
+    QueueModule,
   ],
   controllers: [
     ChargeController,
@@ -42,6 +47,7 @@ import { PostsController } from './posts.controller';
     PollController,
     SseController,
     PostsController,
+    TaskController,
   ],
   providers: [
     ChargeService,
@@ -49,6 +55,8 @@ import { PostsController } from './posts.controller';
     DataService,
     SseService,
     EventsGateway,
+    TaskService,
+    TaskProcessor,
   ],
 })
 export class AppModule {}
