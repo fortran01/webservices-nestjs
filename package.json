@@ -39,7 +39,7 @@
   "devDependencies": {
     "@nestjs/cli": "^10.4.2",
     "@nestjs/schematics": "^10.1.0",
-    "@nestjs/testing": "^10.3.10",
+    "@nestjs/testing": "^10.4.0",
     "@swc/cli": "^0.3.9",
     "@swc/core": "^1.7.6",
     "@types/cookie-parser": "^1.4.7",
