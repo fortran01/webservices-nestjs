@@ -8,7 +8,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [14.x, 16.x, 18.x, 20.x]
 
     steps:
       - uses: actions/checkout@v2
@@ -26,7 +26,7 @@ jobs:
         run: |
           npm run start &
           PID=$!
-          sleep 3  # Allow the application time to start
+          sleep 10  # Allow the application time to start
           if ! kill -0 $PID; then
             echo "Application failed to start."
             exit 1
