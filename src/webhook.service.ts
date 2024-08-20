@@ -30,7 +30,7 @@ export class WebhookService {
     this.stripeClient = new Stripe(
       this.configService.get<string>('STRIPE_SECRET_KEY') || '',
       {
-        apiVersion: '2023-10-16',
+        apiVersion: '2024-06-20',
       },
     );
     this.endpointSecret =
