@@ -27,7 +27,7 @@
     "@nestjs/platform-express": "^10.3.8",
     "@nestjs/platform-socket.io": "^10.3.10",
     "@nestjs/serve-static": "^4.0.2",
-    "@nestjs/websockets": "^10.3.8",
+    "@nestjs/websockets": "^10.4.1",
     "bull": "^4.16.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
