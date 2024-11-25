@@ -19,7 +19,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@nestjs/axios": "^3.0.3",
+    "@nestjs/axios": "^3.1.2",
     "@nestjs/bull": "^10.2.1",
     "@nestjs/common": "^10.4.7",
     "@nestjs/config": "^3.3.0",
