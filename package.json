@@ -34,7 +34,7 @@
     "hbs": "^4.2.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "stripe": "^18.3.0"
+    "stripe": "^18.4.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^11.0.7",
